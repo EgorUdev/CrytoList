@@ -6,14 +6,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.cryptolist.api.ApiFactory
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
 
-    private val compositeDisposable = CompositeDisposable()
+    private lateinit var viewModel: CoinViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,20 +22,11 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val disposable = ApiFactory.apiService.getFullPriceList(fSyms = "BTC,ETH")
-//        val disposable = ApiFactory.apiService.getTopCoinsInfo()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Log.d("TEST_OF_LOADING_DATA", it.toString())
-            }, {
-                it.message?.let { it1 -> Log.d("TEST_OF_LOADING_DATA", it1) }
-            })
-        compositeDisposable.add(disposable)
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.dispose()
+        viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
+        viewModel.loadData()
+        viewModel.priceList.observe(this, Observer {
+            Log.d("TEST_OF_LOAD_DATA", "Success in activity: $it")
+        })
     }
 }

@@ -1,6 +1,10 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+//    alias(libs.plugins.android.application)
+//    alias(libs.plugins.jetbrains.kotlin.android)
+//    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    id("org.jetbrains.kotlin.kapt") version "1.8.0"
+    id("org.jetbrains.kotlin.android") version "1.9.0"
+    id("com.android.application") version "8.4.0"
 }
 
 android {
@@ -45,11 +49,12 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx.v283)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.reactivestreams.ktx)
 
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.rxjava3)
 
     implementation(libs.picasso)
