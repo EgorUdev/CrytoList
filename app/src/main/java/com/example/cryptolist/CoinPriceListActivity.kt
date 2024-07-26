@@ -8,6 +8,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cryptolist.adapters.CoinInfoAdapter
+import com.example.cryptolist.pojo.CoinPriceInfo
 
 class CoinPriceListActivity : AppCompatActivity() {
 
@@ -23,12 +26,18 @@ class CoinPriceListActivity : AppCompatActivity() {
             insets
         }
 
+
+        val adapter = CoinInfoAdapter(this)
+        adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener{
+            override fun onCoinClick(coinPriceInfo: CoinPriceInfo) {
+                Log.d("ON_COIN_CLICK_TEST", coinPriceInfo.fromSymbol)
+            }
+        }
+        val rvCoin = findViewById<RecyclerView>(R.id.rvCoinPriceList)
+        rvCoin.adapter = adapter
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
-//        viewModel.priceList.observe(this, Observer {
-//            Log.d("TEST_OF_LOAD_DATA", "Success in activity: $it")
-//        })
-        viewModel.getDetailInfo("BTC").observe(this, Observer {
-            Log.d("TEST_OF_LOAD_DATA", "Success in activity: $it")
+        viewModel.priceList.observe(this, Observer {
+            adapter.coinInfoList = it
         })
     }
 }
